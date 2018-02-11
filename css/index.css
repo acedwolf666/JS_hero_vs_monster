@@ -186,3 +186,17 @@
 #dialog.lose .lose-dialog {
   display: block;
 }
+/* healing effect*/
+#hero-image-block    .character-block .heal-text {
+  position: absolute;
+  font-size: 60px;
+  color: green;
+  width: 100%;
+  left: 0px;
+  bottom: 50px;
+  font-family: "Contrail One";
+  transition: bottom 600ms;
+}
+#hero-image-block    .character-block .heal-text.healed {
+  bottom: 150px;
+}

@@ -75,6 +75,25 @@ class Hero extends BaseCharacter{
       this.hp = this.maxHp;
     }
     this.updateHtml(this.hpElement, this.hurtElement);
+
+    var _this = this;
+    var i = 1;
+    _this.id = setInterval(function(){
+      if(i == 1){
+        _this.element.getElementsByClassName("effect-image")[0].style.display = "block";
+        _this.element.getElementsByClassName("heal-text")[0].classList.add("healed");
+        _this.element.getElementsByClassName("heal-text")[0].textContent = recoverNum;
+      }
+      _this.element.getElementsByClassName("effect-image")[0].src = 'images/effect/heal/'+ i +'.png';
+      i++;
+
+      if(i>8){
+        _this.element.getElementsByClassName("effect-image")[0].style.display = "none";
+        _this.element.getElementsByClassName("heal-text")[0].classList.remove("healed");
+        _this.element.getElementsByClassName("heal-text")[0].textContent = "";
+        clearInterval(_this.id);
+      }
+    },60);
   }
 }
 class Monster extends BaseCharacter{
@@ -141,11 +160,7 @@ function heroHeal(){
   document.getElementsByClassName("skill-block")[0].style.display = "none";
 
   setTimeout(function(){
-    hero.element.classList.add("healing");
-    setTimeout(function(){
       hero.heal();
-      hero.element.classList.remove("healing");
-    }, 500);
   }, 100);
 
   setTimeout(function(){
