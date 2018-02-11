@@ -46,7 +46,7 @@ class BaseCharacter{
     hurtElement.style.width = (100-this.hp/this.maxHp*100) + "%";
   }
 }
-
+/////////////////////////
 class Hero extends BaseCharacter{
   constructor(name, hp, ap){
     super(name, hp, ap);
@@ -66,6 +66,14 @@ class Hero extends BaseCharacter{
   }
   getHurt(damage){
     super.getHurt(damage);
+    this.updateHtml(this.hpElement, this.hurtElement);
+  }
+  heal(){
+    var recoverNum = this.maxHp*0.1;
+    this.hp += recoverNum;
+    if (this.hp >= this.maxHp){
+      this.hp = this.maxHp;
+    }
     this.updateHtml(this.hpElement, this.hurtElement);
   }
 }
@@ -90,12 +98,7 @@ class Monster extends BaseCharacter{
     this.updateHtml(this.hpElement, this.hurtElement);
   }
 }
-
-///////initialize this game
-var hero = new Hero("Ace", 130, 30);
-var monster = new Monster("Skeleton", 130, 20);
-var rounds = 10;
-
+//////
 function endTurn(){
   rounds--;
   document.getElementById("round-num").textContent = rounds;
@@ -103,6 +106,7 @@ function endTurn(){
     finish();
   }
 }
+////process
 function heroAttack(){
   document.getElementsByClassName("skill-block")[0].style.display = "none";
 
@@ -133,10 +137,44 @@ function heroAttack(){
   }, 1100);
 }
 
+function heroHeal(){
+  document.getElementsByClassName("skill-block")[0].style.display = "none";
+
+  setTimeout(function(){
+    hero.element.classList.add("healing");
+    setTimeout(function(){
+      hero.heal();
+      hero.element.classList.remove("healing");
+    }, 500);
+  }, 100);
+
+  setTimeout(function(){
+    if(monster.alive){
+      monster.element.classList.add("attacking");
+      setTimeout(function(){
+        monster.attack(hero);
+        monster.element.classList.remove("attacking");
+        endTurn();
+        if(hero.alive == false){
+          finish();
+        } else{
+          document.getElementsByClassName("skill-block")[0].style.display = "block";
+        }
+      }, 500);
+    } else {
+      finish();
+    }
+  }, 1100);
+}
+
 function addSkillEvent(){
   var skill = document.getElementById("skill");
   skill.onclick = function(){
     heroAttack();
+  }
+  var heal = document.getElementById("heal");
+  heal.onclick = function(){
+    heroHeal();
   }
 }
 
@@ -149,4 +187,8 @@ function finish(){
     dialog.classList.add("lose");
   }
 }
+///////initialize this game
+var hero = new Hero("Ace", 130, 30);
+var monster = new Monster("Skeleton", 130, 35);
+var rounds = 10;
 addSkillEvent();
